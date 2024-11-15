@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+      "target": "ES2021",
+      "baseUrl": "./",
+      "paths": {
+        "#src/*": [
+          "src/*"
+        ]
+      }
+    }
+  }
