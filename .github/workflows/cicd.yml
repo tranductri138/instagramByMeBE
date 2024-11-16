@@ -6,9 +6,8 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
-    runs-on: self-hosted  
-
+  build:
+    runs-on: ubuntu-latest  
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -30,6 +29,11 @@ jobs:
           IMAGE_NAME=ghcr.io/${{ secrets.GH_USERNAME }}/instagram:latest
           docker push $IMAGE_NAME
 
+  deploy:
+    needs: build 
+    runs-on: self-hosted 
+
+    steps:
       - name: Deploy to VPS
         run: |
           docker pull ghcr.io/${{ secrets.GH_USERNAME }}/instagram:latest
