@@ -1,0 +1,37 @@
+// mongodb
+docker run -d \
+  --name mongodb \
+  -p 27017:27017 \
+  -e MONGO_INITDB_ROOT_USERNAME=tri \
+  -e MONGO_INITDB_ROOT_PASSWORD=@123 \
+  -v mongodb_data:/data/db \
+  --memory="512m" \
+  --cpus="1.0" \
+  mongo:6.0
+
+docker exec -it mongodb -u rootuser -p rootpass --authenticationDatabase admin mongosh
+
+phai use DB toi db instagram roi moi tao role va user
+// create roles
+db.createRole({
+  role: "readWriteRole",
+  privileges: [
+    {
+      resource: { db: "mydatabase", collection: "" },
+      actions: [ "find", "insert", "update", "remove", "createIndex" ]
+    }
+  ],
+  roles: []
+})
+// 
+
+db.createUser({
+  user: "tri1",
+  pwd: "tridepzai1",
+  roles: [
+    { role: "readWriteRole", db: "instagram" }
+  ]
+})
+
+
+mongodb://tri1:tridepzai1@urIp:27017/instagram?authSource=mydatabase
