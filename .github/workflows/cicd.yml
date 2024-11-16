@@ -1,0 +1,46 @@
+name: Pipeline CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted  
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GH_USERNAME }}
+          password: ${{ secrets.GH_TOKEN }}
+
+      - name: Build Docker Image
+        run: |
+          IMAGE_NAME=ghcr.io/${{ secrets.GH_USERNAME }}/instagram:latest
+          docker build --build-arg REPO=${{ secrets.GH_REPO }} -t $IMAGE_NAME .
+
+      - name: Push Docker Image
+        run: |
+          IMAGE_NAME=ghcr.io/${{ secrets.GH_USERNAME }}/instagram:latest
+          docker push $IMAGE_NAME
+
+      - name: Deploy to VPS
+        run: |
+          docker pull ghcr.io/${{ secrets.GH_USERNAME }}/instagram:latest
+
+          if [ "$(docker ps -q -f name=instagram)" ]; then
+            docker stop instagram
+            docker rm instagram
+          fi
+
+          docker run -d \
+            --name instagram \
+            --network host \
+            --restart unless-stopped \
+            ghcr.io/${{ secrets.GH_USERNAME }}/instagram:latest

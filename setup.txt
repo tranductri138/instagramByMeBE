@@ -34,4 +34,7 @@ db.createUser({
 })
 
 
-mongodb://tri1:tridepzai1@urIp:27017/instagram?authSource=mydatabase
+mongodb://tri1:tridepzai1@urIp:27017/instagram?authSource=instagram
+
+setup github actions
+RUNNER_ALLOW_RUNASROOT=true 
